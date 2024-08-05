@@ -1,0 +1,651 @@
+openapi: 3.0.2
+info:
+  description: Documentation for the Command-and-Control NextGen API
+  title: C2NG API Definition
+  version: 1.0.0
+components:
+  schemas:
+    AddressRequestResponse:
+      properties:
+        Address:
+          description: IP Address for the peer
+        Success:
+          description: Success flag
+          enum:
+          - true
+          type: boolean
+      required:
+      - Address
+      type: object
+    AddressRequestResponseErrors:
+      properties:
+        Segment:
+          enum:
+          - invalid
+          type: string
+        Session:
+          enum:
+          - session_not_found
+          - peer_not_connected
+          type: string
+        UasID:
+          enum:
+          - not_found
+          type: string
+      type: object
+    AddressRequestResponseFailed:
+      properties:
+        Errors:
+          $ref: '#/components/schemas/AddressRequestResponseErrors'
+        Message:
+          description: Auxillary error message
+          type: string
+        Success:
+          description: Failure flag.
+          enum:
+          - false
+          type: boolean
+      required:
+      - Errors
+      type: object
+    AerialConnectionSessionRequest:
+      properties:
+        IMSI:
+          description: UE IMSI ID
+          type: string
+        Metadata:
+          description: Opaque object to pass to USSP
+          type: object
+        ReferenceTime:
+          description: UNIX Timestamp
+          type: number
+        Segment:
+          description: 'Segment for which to request a session: airborne (''ua'')
+            or ground (''adx'').'
+          enum:
+          - ua
+          - adx
+          type: string
+        UasID:
+          description: CAA UAS ID
+          type: string
+      required:
+      - ReferenceTime
+      - Segment
+      - UasID
+      type: object
+    AerialConnectionSessionResponse:
+      properties:
+        EncryptedPrivateKey:
+          description: Session private key encrypted with client secret
+          type: string
+        GatewayIP:
+          description: Gateway IP for aerial connection.
+        IP:
+          description: Own IP address for aerial connection.
+        KID:
+          description: Key unique identifier
+          type: string
+        Success:
+          description: Success flag
+          enum:
+          - true
+          type: boolean
+      required:
+      - EncryptedPrivateKey
+      - GatewayIP
+      - IP
+      - KID
+      type: object
+    AerialConnectionSessionResponseErrors:
+      properties:
+        Request:
+          enum:
+          - imsi_required
+          type: string
+        USS:
+          enum:
+          - provider_unavailable
+          - flight_not_approved
+          type: string
+      type: object
+    AerialConnectionSessionResponseFailed:
+      properties:
+        Errors:
+          $ref: '#/components/schemas/AerialConnectionSessionResponseErrors'
+        Message:
+          description: Auxillary error message
+          type: string
+        Success:
+          description: Failure flag.
+          enum:
+          - false
+          type: boolean
+      required:
+      - Errors
+      type: object
+    BaseSuccess:
+      properties:
+        Success:
+          description: Success flag
+          enum:
+          - true
+          type: boolean
+      type: object
+    CertificateRequestResponse:
+      properties:
+        Certificate:
+          description: Certificate with a public key as a PEM string
+          type: string
+        KID:
+          description: Key unique identifier
+          type: string
+        Success:
+          description: Success flag
+          enum:
+          - true
+          type: boolean
+      required:
+      - Certificate
+      - KID
+      type: object
+    CertificateRequestResponseErrors:
+      properties:
+        Segment:
+          enum:
+          - invalid
+          type: string
+        Session:
+          enum:
+          - session_not_found
+          - peer_not_connected
+          type: string
+        UasID:
+          enum:
+          - not_found
+          type: string
+      type: object
+    CertificateRequestResponseFailed:
+      properties:
+        Errors:
+          $ref: '#/components/schemas/CertificateRequestResponseErrors'
+        Message:
+          description: Auxillary error message
+          type: string
+        Success:
+          description: Failure flag.
+          enum:
+          - false
+          type: boolean
+      required:
+      - Errors
+      type: object
+    DIDConfigRequestResponse:
+      properties:
+        Config:
+          description: DID Verifier Config
+        Success:
+          description: Success flag
+          enum:
+          - true
+          type: boolean
+      required:
+      - Config
+      type: object
+    DIDConfigRequestResponseFailed:
+      properties:
+        Errors:
+          $ref: '#/components/schemas/Generated2'
+        Message:
+          description: Auxillary error message
+          type: string
+        Success:
+          description: Failure flag.
+          enum:
+          - false
+          type: boolean
+      required:
+      - Errors
+      type: object
+    DIDJWTRequestResponse:
+      properties:
+        JWT:
+          description: DID JWT
+          type: string
+        Success:
+          description: Success flag
+          enum:
+          - true
+          type: boolean
+      required:
+      - JWT
+      type: object
+    DIDJWTRequestResponseFailed:
+      properties:
+        Errors:
+          $ref: '#/components/schemas/Generated1'
+        Message:
+          description: Auxillary error message
+          type: string
+        Success:
+          description: Failure flag.
+          enum:
+          - false
+          type: boolean
+      required:
+      - Errors
+      type: object
+    FVCAttiude:
+      properties:
+        heading:
+          description: Aircraft True Heading (degrees)
+          type: number
+        pitch:
+          description: Aircraft Pitch (degrees)
+          type: integer
+        roll:
+          description: Aircraft Roll (degrees)
+          type: integer
+        yaw:
+          description: Aircraft Yaw (degrees)
+          type: integer
+      type: object
+    FVCDataPacketTime:
+      properties:
+        unix:
+          type: number
+      required:
+      - unix
+      type: object
+    FVCLocation:
+      properties:
+        alt:
+          description: Geodetic altitude in meters
+          type: number
+        baro:
+          description: Aircraft Barometric Altitude
+          type: number
+        lat:
+          description: Latitude in degress
+          type: number
+        lon:
+          description: Longitude in degress
+          type: number
+      required:
+      - lat
+      - lon
+      type: object
+    FVCPacket:
+      properties:
+        perf:
+          $ref: '#/components/schemas/FVCPerf'
+        position:
+          $ref: '#/components/schemas/FVCPosition'
+        signal:
+          $ref: '#/components/schemas/FVCSignal'
+        timestamp:
+          $ref: '#/components/schemas/FVCDataPacketTime'
+      required:
+      - timestamp
+      type: object
+    FVCPerf:
+      properties:
+        RTT:
+          description: Round-Trip Time (ms)
+          type: number
+        heartbeat_loss:
+          description: Heartbeat Loss Flag
+          type: boolean
+      type: object
+    FVCPosition:
+      properties:
+        attitude:
+          $ref: '#/components/schemas/FVCAttiude'
+        location:
+          $ref: '#/components/schemas/FVCLocation'
+        speeds:
+          $ref: '#/components/schemas/FVCSpeeds'
+      required:
+      - location
+      type: object
+    FVCSignal:
+      properties:
+        RSRP:
+          description: Reference Signal Received Power
+          type: integer
+        RSRP_4G:
+          description: Reference Signal Received Power (LTE)
+          type: integer
+        RSRP_5G:
+          description: Reference Signal Received Power (LTE)
+          type: integer
+        RSRQ:
+          description: Reference Signal Received Quality
+          type: integer
+        RSRQ_4G:
+          description: Reference Signal Received Quality (LTE)
+          type: integer
+        RSRQ_5G:
+          description: Reference Signal Received Quality (NR)
+          type: integer
+        RSSI:
+          description: Received Signal Strength Indicator
+          type: integer
+        SINR:
+          description: Signal to Interference & Noise Ratio
+          type: integer
+        band:
+          description: Aircraft Serving Frequency Band Identification
+          type: string
+        cell:
+          description: Aircraft Serving physical cell identifier
+          type: string
+        radio:
+          description: Current Radio Mode
+          enum:
+          - UNKNOWN
+          - 4G
+          - 5GNSA
+          - 5GSA
+          type: string
+      required:
+      - radio
+      type: object
+    FVCSpeeds:
+      properties:
+        vair:
+          description: Aircraft Air Speed (meters per second)
+          type: number
+        vdown:
+          description: Aircraft Downward Velocity (meters per second)
+          type: number
+        veast:
+          description: Aircraft Eest Velocity (meters per second)
+          type: number
+        vnorth:
+          description: Aircraft North Velocity (meters per second)
+          type: number
+      type: object
+    Generated:
+      properties:
+        Database:
+          enum:
+          - unable_to_read
+          type: string
+        UasID:
+          enum:
+          - not_found
+          type: string
+      type: object
+    Generated1:
+      properties:
+        UasID:
+          enum:
+          - not_found
+          type: string
+      type: object
+    Generated2:
+      properties:
+        UasID:
+          enum:
+          - not_found
+          type: string
+      type: object
+    SignalRequestResponse:
+      properties:
+        Stats:
+          description: Signal averaged statistics
+          items:
+            type: integer
+          type: array
+        Success:
+          description: Success flag
+          enum:
+          - true
+          type: boolean
+      required:
+      - Stats
+      type: object
+    SignalRequestResponseFailed:
+      properties:
+        Errors:
+          $ref: '#/components/schemas/Generated'
+        Message:
+          description: Auxillary error message
+          type: string
+        Success:
+          description: Failure flag.
+          enum:
+          - false
+          type: boolean
+      required:
+      - Errors
+      type: object
+    SignalStatsReportRequest:
+      properties:
+        Packet:
+          $ref: '#/components/schemas/FVCPacket'
+      required:
+      - Packet
+      type: object
+    ValidationError:
+      properties:
+        Errors:
+          additionalProperties:
+            additionalProperties: {}
+            type: object
+          description: Error identifier dict
+          type: object
+        Message:
+          description: Auxillary error message
+          type: string
+        Success:
+          description: Failure flag.
+          enum:
+          - false
+          type: boolean
+      type: object
+paths:
+  /address/{uasid}/{segment}:
+    get:
+      parameters:
+      - description: UAS ID for which to fetch the peer's address.
+        in: path
+        name: UasID
+        required: true
+        schema:
+          type: string
+      - description: Segment for which to fetch the peer's certificate
+        in: path
+        name: Segment
+        required: true
+        schema:
+          enum:
+          - ua
+          - adx
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressRequestResponse'
+          description: Success payload containing peer's address
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddressRequestResponseFailed'
+          description: Payload containing error description
+      summary: Request a current address from existing connectivity session.
+  /certificate/{uasid}/{segment}:
+    get:
+      parameters:
+      - description: UAS ID for which to fetch the peer's certificate
+        in: path
+        name: UasID
+        required: true
+        schema:
+          type: string
+      - description: Segment for which to fetch the peer's certificate
+        in: path
+        name: Segment
+        required: true
+        schema:
+          enum:
+          - ua
+          - adx
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CertificateRequestResponse'
+          description: Success payload containing peer's certificate
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CertificateRequestResponseFailed'
+          description: Payload containing error description
+      summary: Request a current certificate from existing connectivity session.
+  /did/config/{uasid}:
+    get:
+      parameters:
+      - description: UAS ID for which to issue a Verificable Credential.
+        in: path
+        name: UasID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DIDConfigRequestResponse'
+          description: Success payload containing JWT-encoded Verificable Credential.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DIDConfigRequestResponseFailed'
+          description: Payload containing error description
+      summary: Request a configuration for a Credential Verifier from a central authority
+        ("issuer").
+  /did/jwt/{uasid}:
+    get:
+      parameters:
+      - description: UAS ID for which to issue a Verificable Credential.
+        in: path
+        name: UasID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DIDJWTRequestResponse'
+          description: Success payload containing JWT-encoded Verificable Credential.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DIDJWTRequestResponseFailed'
+          description: Payload containing error description
+      summary: Request a Verificable Credential in a form of signed JWT.
+  /session:
+    delete:
+      parameters:
+      - description: UAS ID for the session
+        in: path
+        name: UasID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseSuccess'
+          description: Success payload containing session information
+      summary: Request a new session for an ADX client (RPS or USS services)
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AerialConnectionSessionRequest'
+        description: Connectivity Session Request
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AerialConnectionSessionResponse'
+          description: Success payload containing session information
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AerialConnectionSessionResponseFailed'
+          description: Payload containing error description
+      summary: Request a new session for an ADX client (RPS or USS services)
+  /signal/{uasid}:
+    get:
+      parameters:
+      - description: UAS ID for which to fetch the peer's address.
+        in: path
+        name: UasID
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignalRequestResponse'
+          description: Success payload containing peer's address
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SignalRequestResponseFailed'
+          description: Payload containing error description
+      summary: Request a current address from existing connectivity session.
+    post:
+      parameters:
+      - description: UAS ID that sent the sample.
+        in: path
+        name: UasID
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignalStatsReportRequest'
+        description: A measurement sample object.
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BaseSuccess'
+          description: Sample is successfully received.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+          description: Payload containing error description.
+      summary: Receives a sample of signal measurements from a UA with reference time
+        and position.

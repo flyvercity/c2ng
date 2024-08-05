@@ -1,0 +1,39 @@
+service:
+  port: 9090
+logging:
+  verbose: false
+oauth:
+  keycloak:
+    base: http://oauth:8080
+    realm: c2ng
+    retry-timeout: 30
+mongo:
+  uri: mongodb://root:example@mongo:27017/
+influx:
+  uri: http://influxdb:8086
+  org: c2ng
+  bucket: aerial-data
+uss:
+  endpoint: http://uss:9091
+  oauth:
+    keycloak:
+      base: http://oauth:8080
+      realm: c2ng
+      auth-client-id: uss-access
+sliceman:
+  provider: simulated
+  simulated:
+    ue: 192.168.48.8
+    adx: 192.168.48.9
+    gateway: 192.168.48.1
+  cumucore:
+    uri: https://host:port/
+security:
+  certificate: /app/config/c2ng/service.pem
+  private: /app/config/c2ng/private.pem
+  default-ttl: 3600
+did:
+  issuer-did: /app/config/did/issuer.did
+  resources:
+    sim-drone-id:
+      jwt: /app/config/did/sim-drone-id.jwt

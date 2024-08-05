@@ -1,0 +1,40 @@
+# SPDX-License-Identifier: MIT
+# Copyright 2023 Flyvercity
+
+version: '3'
+
+services:
+  c2ng-ua:
+    image: c2ng-uas-sim
+    env_file:
+      - ../../.env
+    environment:
+      - C2NG_SIM_SUBSYSTEM=ua
+    volumes:
+      - ../../c2ng/common:/app/c2ng/common
+      - ../../c2ng/uas_sim:/app/c2ng/uas_sim
+    ports:
+      - 9092:9092/udp
+    networks:
+      c2ng:
+        ipv4_address: 192.168.48.8
+
+  c2ng-adx:
+    image: c2ng-uas-sim
+    env_file:
+      - ../../.env
+    environment:
+      - C2NG_SIM_SUBSYSTEM=adx
+    volumes:
+      - ../../c2ng/common:/app/c2ng/common
+      - ../../c2ng/uas_sim:/app/c2ng/uas_sim
+    ports:
+      - 9093:9093/udp
+    networks:
+      c2ng:
+        ipv4_address: 192.168.48.9
+
+networks:
+  c2ng:
+    name: c2ng-net
+    external: true
